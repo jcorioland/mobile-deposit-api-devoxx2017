@@ -107,7 +107,8 @@ stage('Deploy to Prod') {
           sed -i 's/IMAGE_TAG/${dockerTag}/g' ./deployment.yml
 
           # Deploy the application
-          if [[  "\$(kubectl get svc | grep 'mobile-deposit-api')" != "''" ]]
+          kubectlGetSvc=\$(kubectlget svc | grep 'mobile-deposit-api');
+          if [ "\$kubectlGetSvc" -ne "" ];
           then
             # the deployment & service already exist, only update the used image
             kubectl set image deployment/mobile-deposit-api mobile-deposit-api=${env.DOCKER_REGISTRY}/mobile-deposit-api:${dockerTag}
